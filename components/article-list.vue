@@ -56,6 +56,7 @@
     // 这样生命的变量时响应式的，不这样声明请求回来复制不然渲染到模板上
     data: articleData,
   } = await useAsyncData('index_GetList', () => getArticleList(queryPrams))
+  console.log('文章信息:::',articleData.value)
   if (articleData.value) {
     articleList.value = articleData.value.list
     queryPrams.total = articleData.value.pagination.total
@@ -241,7 +242,7 @@
                     <span class="pr-3 pt-2">{{ item.userInfo.nickname }}</span>
                     <span class="pt-2">{{ formactDate(item.createTime) }}</span>
                   </div>
-                  <span @click="$router.push(`/detail/${item.id}`)">
+                  <span @click="$router.push(`/article/${item.id}`)">
                     <button class="btn btn-neutral btn-xs xia-btn">Read</button>
                   </span>
                 </div>

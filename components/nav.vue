@@ -246,7 +246,7 @@
           class="mt-3 p-2 shadow menu menu-md dropdown-content bg-base-100 rounded-box w-52 max-h-72 text-gray-500 text-xs overflow-auto"
         >
           <li v-for="item in articleList" class="flex items-center">
-            <NuxtLink class="py-2 px-4" :to="'/detail/' + item.id">{{ item.value }}</NuxtLink>
+            <NuxtLink class="py-2 px-4" :to="'/article/' + item.id">{{ item.value }}</NuxtLink>
           </li>
         </ul>
       </div>
