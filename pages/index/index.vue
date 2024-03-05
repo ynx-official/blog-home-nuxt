@@ -5,7 +5,7 @@
   // console.log(imagesData);
   useHead({
     title: '文章列表',
-    titleTemplate: title => `${title} - 江夏的博客`,
+    titleTemplate: title => `${title} - 魚的小屋`,
   })
   // 古诗词
   const { data: gushiciData, } = await useAsyncData('gushici_Get', () => gushici())
@@ -16,7 +16,7 @@
 </script>
 <template>
   <div class="home-container">
-    <h1 class="hidden">首页 - 江夏的博客</h1>
+    <h1 class="hidden">首页 - 魚的小屋</h1>
     <!-- 全局共享布局 -->
     <section class="banner-container">
       <!-- 文字信息 -->

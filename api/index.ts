@@ -1,4 +1,4 @@
-import * as article from './article'
+import * as article from './article/article'
 import * as tag from './tag'
 import * as category from './category'
 import request from '~~/api/request.js'
@@ -25,7 +25,7 @@ export const gushici = async () => {
 }
 // 获取天气
 export const getWeather = async () => {
-  const res = await request.get('/resources/weather')
+  const res = await request.get('/blog/resources/weather')
   return res.data
 }
 const api = {

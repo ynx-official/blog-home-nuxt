@@ -39,13 +39,13 @@
   const isOpen = ref(false)
   useHead({
     title: '友链',
-    titleTemplate: title => `${title} - 江夏的博客`,
+    titleTemplate: title => `${title} - 魚的小屋`,
   })
 </script>
 <template>
   <NuxtLayout name="main-content">
     <div class="links-container pt-3 rounded-box xl:p-4">
-      <h1 class="hidden">友情链接 - 江夏的博客</h1>
+      <h1 class="hidden">友情链接 - 魚的小屋</h1>
       <div class="flex justify-end">
         <label
           for="link-add-modal"

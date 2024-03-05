@@ -3,7 +3,7 @@
   import { useRoute } from 'vue-router'
   import { useModal, useToast } from 'tailvue'
   import { beforeTimeNow } from '@/utils'
-  import { addComment, addReply, delComment, delReply } from '@/api/article'
+  import { addComment, addReply, delComment, delReply } from '~/api/article/article'
 
   import { messageDanger, messageSuccess } from '~~/utils/toast'
   defineProps({

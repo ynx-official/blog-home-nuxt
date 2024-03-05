@@ -11,25 +11,25 @@ export const xBLogStore = useStorage('x-blog-store', { likes: [], })
 
 const getOptions = async (type: string) => {
   if (type === '分类') {
-    let { data: res, } = await useAsyncData('index_GetCategory', () => api.getAllCategory())
-    if (!res.value) {
-      res = ref([]) // 仅为了解决开发环境报错
-    }
-    // console.log('=>>>>>>>>>>>>>>>>>>>>>', res.value)
-    categoryOptions.value = res.value.filter((v: any) => v.articleCount)
+    // let { data: res, } = await useAsyncData('index_GetCategory', () => api.getAllCategory())
+    // if (!res.value) {
+    //   res = ref([]) // 仅为了解决开发环境报错
+    // }
+    // // console.log('=>>>>>>>>>>>>>>>>>>>>>', res.value)
+    // categoryOptions.value = res.value.filter((v: any) => v.articleCount)
     // console.log(res)
   } else {
-    let { data: res, } = await useAsyncData('index_GetTag', () => api.getAllTag())
-    // console.log({ res: res.value, })
-    if (!res.value) {
-      res = ref([]) // 仅为了解决开发环境报错
-    }
-    tagsOptions.value = res.value
-      .filter((v: any) => v.articleCount)
-      .map((v: any) => {
-        v.checked = false
-        return v
-      })
+    // let { data: res, } = await useAsyncData('index_GetTag', () => api.getAllTag())
+    // // console.log({ res: res.value, })
+    // if (!res.value) {
+    //   res = ref([]) // 仅为了解决开发环境报错
+    // }
+    // tagsOptions.value = res.value
+    //   .filter((v: any) => v.articleCount)
+    //   .map((v: any) => {
+    //     v.checked = false
+    //     return v
+    //   })
   }
 }
 const colors: string[] = [

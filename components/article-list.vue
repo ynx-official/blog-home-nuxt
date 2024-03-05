@@ -1,22 +1,15 @@
 <script setup lang="ts">
-  import { computed, reactive, ref } from 'vue'
-  import { getArticleList } from '@/api/article'
-  import { getWeather } from '@/api/index'
-  import {
-    categoryOptions,
-    formactDate,
-    getOptions,
-    tagsOptions,
-    updateLikesHandle,
-    xBLogStore
-  } from '@/utils/common'
-  import { colorRgb } from '~~/utils/color'
+import { computed, reactive, ref } from 'vue'
+import { getArticleList } from '~/api/article/article'
+import { categoryOptions, formactDate, getOptions, updateLikesHandle, xBLogStore } from '@/utils/common'
+import { colorRgb } from '~~/utils/color'
+import type { IArticle } from '~/api/article/types'
 
-  interface queryState {
-    page: number
+interface queryState {
+    current: number
     category: string
     tags: string[]
-    pageSize: number
+    size: number
     total: number
     title?: string
     description?: string
@@ -30,14 +23,14 @@
   }
   // const store = useStore()
   // 文章列表中的每一项item都为any
-  const articleListDefault: any[] = []
+  const articleListDefault: IArticle[] = []
   const articleList = ref(articleListDefault)
 
   const queryPrams: queryState = reactive({
-    page: 1,
+    current: 1,
     category: '',
     tags: [],
-    pageSize: 12,
+    size: 12,
     total: 0,
     title: '',
     description: '',
@@ -58,9 +51,9 @@
   } = await useAsyncData('index_GetList', () => getArticleList(queryPrams))
   console.log('文章信息:::',articleData.value)
   if (articleData.value) {
-    articleList.value = articleData.value.list
-    queryPrams.total = articleData.value.pagination.total
-    console.log('文章列表总文章======>', articleData.value.pagination.total)
+    articleList.value = articleData.value.records
+    queryPrams.total = articleData.value.total
+    console.log('文章列表总文章======>', articleData.value.total)
   }
   // console.log({articleData:articleData.value})
   // 此测试印证上面描述
@@ -71,16 +64,16 @@
   getOptions('分类')
   // 下一页
   const getArticleListHandle = async (val = 1) => {
-    queryPrams.page = val
+    queryPrams.current = val
     const { data: res, } = await useAsyncData('index_GetList', () => getArticleList(queryPrams))
-    articleList.value = res.value.list
-    queryPrams.total = res.value.pagination.total
+    articleList.value = res.value.records
+    queryPrams.total = res.value.total
   }
   // 获取标签名(暂时没有用)
   const getTagLabel = (arr: []): string => {
     // 如果是js的话，这个方法会写得很简单
     //  ts的话，它会提前对各种值进行类型推导，避免了一些取值的错误（比如在undefined和null取属性值）
-    return arr.map((v: any) => v.label).join()
+    return arr.map((v: any) => v.tagName).join()
   }
 
   // 点击tag
@@ -116,7 +109,7 @@
   // 模糊搜索
   const searchText = ref('')
   const onSearchHandle = () => {
-    queryPrams.page = 1
+    queryPrams.current = 1
     queryPrams.category = ''
     queryPrams.tags = []
     queryPrams.title = searchText.value
@@ -160,7 +153,7 @@
 
   onMounted(async () => {
     // 古诗词
-    weatherData.value = await getWeather()
+    // weatherData.value = await getWeather()
     //  console.log(weatherData.value)
   })
 </script>
@@ -172,7 +165,7 @@
       <div class="tag-card-wrap">
         <base-card icon="blog-tag" title="标签" min-height="110px" vertical>
           <div
-            v-for="item of tagsOptions"
+            v-for="item of tagVOList"
             :key="item.id"
             class="custom-tag"
             :class="item.checked ? 'active' : ''"
@@ -193,53 +186,54 @@
           <div v-for="item in articleList" :key="item.id" class="article-item">
             <figure>
               <img
-                v-lazyImg="item.cover"
+                  @click="$router.push(`/article/${item.id}`)"
+                v-lazyImg="item.articleCover"
                 class="h-52 w-full bg-gray-900"
                 :alt="item.category.label"
               >
             </figure>
             <div class="card-body">
-              <h2 class="card-title">
-                {{ item.title }}
+              <h2 class="card-title" @click="$router.push(`/article/${item.id}`)">
+                {{ item.articleTitle }}
                 <div v-if="item.topping" class="badge badge-secondary">TOP</div>
               </h2>
-              <p class="text-sm">{{ item.description }}</p>
+              <p class="text-sm" @click="$router.push(`/article/${item.id}`)">{{ item.articleTitle }}</p>
               <div class="card-actions justify-start text-xs flex-wrap">
                 <div class="flex items-center">
                   <!-- 分类 -->
                   <span class="text-icon" :style="{ color: item.category.color }">
                     <xia-icon icon="blog-category" class="mr-1" />
-                    {{ item.category.label }}
+                    {{ item.category.categoryName }}
                   </span>
                   <!-- 标签 -->
-                  <span class="text-icon" :style="{ color: item.tags[0]?.color }">
+                  <span class="text-icon" :style="{ color: item.tagVOList[0]?.color }">
                     <xia-icon icon="blog-tag" class="mr-1" />
-                    {{ getTagLabel(item.tags) }}
+                    {{ getTagLabel(item.tagVOList) }}
                   </span>
                   <!-- 阅读量 -->
-                  <span class="text-icon pointer"><xia-icon icon="blog-view" class="mr-1" />{{ item.views }}</span>
+                  <span class="text-icon pointer"><xia-icon icon="blog-view" class="mr-1" />{{ item.isRecommend }}</span>
                   <!-- 点赞数 -->
                   <span class="text-icon pointer" @click.stop="updateLikesHandle(item)">
                     <xia-icon
                       :icon="localLikes.includes(item.id) ? 'blog-like-solid' : 'blog-like'"
                       class="mr-1"
                     />
-                    {{ item.likes }}
+                    {{ item.isRecommend }}
                   </span>
                   <!-- 评论数 -->
                   <span class="text-icon">
                     <xia-icon icon="blog-pinglun" class="mr-1" />
-                    {{ item.commentCount }}
+                    {{ item.isRecommend }}
                   </span>
                 </div>
                 <div class="flex justify-between w-full items-center">
                   <div class="flex items-center">
                     <div class="avatar btn btn-ghost btn-circle btn-xs">
                       <div class="rounded-full">
-                        <img :src="item.userInfo.avatar" :alt="item.userInfo.nickname">
+                        <img :src="item.avatar" :alt="item.nickname">
                       </div>
                     </div>
-                    <span class="pr-3 pt-2">{{ item.userInfo.nickname }}</span>
+                    <span class="pr-3 pt-2">{{ item.nickname }}</span>
                     <span class="pt-2">{{ formactDate(item.createTime) }}</span>
                   </div>
                   <span @click="$router.push(`/article/${item.id}`)">
@@ -263,7 +257,7 @@
             prev
             next
             :current-page="current"
-            :page-size="queryPrams.pageSize"
+            :page-size="queryPrams.size"
             :total="queryPrams.total"
             :max="5"
             @change="currentChangeHandle"

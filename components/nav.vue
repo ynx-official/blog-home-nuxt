@@ -11,7 +11,7 @@
   import { ref, reactive } from 'vue'
   import dayjs from 'dayjs'
   import Yaya from '../assets/images/animal/yaya.svg'
-  import { getArticleList } from '@/api/article'
+  import { getArticleList } from '~/api/article/article'
   import { throttle } from '~~/utils'
   import api from '@/api'
   import { adminUrl } from '@/config'
@@ -21,26 +21,26 @@
       title: '首页',
       icon: 'blog-shouye',
     },
-    {
-      path: '/archives',
-      title: '归档',
-      icon: 'blog-guidang',
-    },
-    {
-      path: '/links',
-      title: '友链',
-      icon: 'blog-lianjie',
-    },
-    {
-      path: '/msgboard',
-      title: '留言板',
-      icon: 'blog-liuyanguanli',
-    },
-    {
-      path: '/about',
-      title: '关于',
-      icon: 'blog-about',
-    },
+    // {
+    //   path: '/archives',
+    //   title: '归档',
+    //   icon: 'blog-guidang',
+    // },
+    // {
+    //   path: '/links',
+    //   title: '友链',
+    //   icon: 'blog-lianjie',
+    // },
+    // {
+    //   path: '/msgboard',
+    //   title: '留言板',
+    //   icon: 'blog-liuyanguanli',
+    // },
+    // {
+    //   path: '/about',
+    //   title: '关于',
+    //   icon: 'blog-about',
+    // },
     {
       path: '/projects',
       title: '项目',

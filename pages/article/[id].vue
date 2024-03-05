@@ -3,7 +3,7 @@
   import { MdPreview } from 'md-editor-v3'
 
   import { useScroll } from '@vueuse/core'
-  import { getArticleInfo, getComment } from '@/api/article'
+  import { getArticleInfo, getComment } from '~/api/article/article'
   import { updateViews, xBLogStore, updateLikesHandle, formactDate } from '@/utils/common'
   import defaultImg from '@/assets/images/create.webp'
   import { type tocInter, isTrueCoverLink } from '@/utils'
@@ -131,7 +131,7 @@
 
   useHead({
     title: ArticleInfo.title + ' - 文章详情',
-    titleTemplate: title => `${title} - 江夏的博客`,
+    titleTemplate: title => `${title} - 魚的小屋`,
   })
 </script>
 <template>
