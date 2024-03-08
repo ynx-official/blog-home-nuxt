@@ -109,8 +109,8 @@
       }
     ],
     // 百度统计
-    script: [{ src: 'https://hm.baidu.com/hm.js?9c1165af167360b492031753308c3878', }],
-    link: [{ rel: 'shortcut icon', href: 'https://jiang-xia.top/favicon.ico', }],
+    // script: [{ src: 'https://hm.baidu.com/hm.js?9c1165af167360b492031753308c3878', }],
+    link: [{ rel: 'shortcut icon', href: 'https://oss.120120.top/icon.ico', }],
   })
 </script>
 <template>

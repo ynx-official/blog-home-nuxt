@@ -1,56 +1,59 @@
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue'
-  import { MdPreview } from 'md-editor-v3'
+import { computed, reactive, ref } from 'vue'
+import { MdPreview } from 'md-editor-v3'
 
-  import { useScroll } from '@vueuse/core'
-  import { getArticleInfo, getComment } from '~/api/article/article'
-  import { updateViews, xBLogStore, updateLikesHandle, formactDate } from '@/utils/common'
-  import defaultImg from '@/assets/images/create.webp'
-  import { type tocInter, isTrueCoverLink } from '@/utils'
-  import Qie from '@/assets/images/animal/qie.svg'
+import { useScroll } from '@vueuse/core'
+import { getArticleInfo, getComment } from '~/api/article/article'
+import { formactDate, updateLikesHandle, updateViews, xBLogStore } from '@/utils/common'
+import defaultImg from '@/assets/images/create.webp'
+import { isTrueCoverLink, type tocInter } from '@/utils'
+import Qie from '@/assets/images/animal/qie.svg'
+import type { ArticleDetailVO, CategoryVO, TagVO } from '~/api/article/types'
 
-  const theme: any = useTheme()
+const theme: any = useTheme()
   interface FormState {
     [propName: string]: any
   }
-  const defaultForm: FormState = {
-    id: '',
-    title: '',
-    description: '',
-    content: '',
-    contentHtml: '',
-    cover: '',
-    uTime: '',
-    category: {
-      label: '',
-    },
-    tags: [],
-    views: 0,
-    checked: 0,
-    likes: 0,
-    uid: 0,
-    userInfo: {},
+  let ArticleInfo: ArticleDetailVO = {
+    id: 1,
+    articleCover: '',
+    articleTitle: '',
+    articleContent: '',
+    articleType: 1,
+    viewCount: 1,
+    likeCount: 1,
+    category: {} as CategoryVO,
+    tagVOList: [] as TagVO[],
+    lastArticle: {} as ArticleDetailVO,
+    nextArticle: {} as ArticleDetailVO,
+    createTime: '',
+    updateTime: '',
+    nickname: '',
+    avatar: '',
   }
   const route = useRoute()
   // 先定义默认数组类型
   const topicsDefault: tocInter[] = []
   const topics = ref(topicsDefault)
-  const ArticleInfo = reactive({ ...defaultForm, })
+  // let ArticleInfo = reactive({ ...defaultForm, })
   // console.log(route)
   const params = route.params
   console.log({ '文章id:': params.id, })
   // 响应式声明
-  const { data: articleData, refresh, } = await useAsyncData('detail_GetInfo', () =>
+  const { data: articleData, } = await useAsyncData('detail_GetInfo', () =>
     getArticleInfo(params)
   )
   const setArticleData = () => {
-    if (articleData) {
-      Object.keys(defaultForm).forEach((v: string) => {
-        if (articleData.value.info[v]) {
-          ArticleInfo[v] = articleData.value.info[v]
-        }
-      })
-    }
+    console.log('文章信息',articleData.value)
+      if (articleData.value) {
+        ArticleInfo = articleData.value
+        // Object.keys(defaultForm).forEach((v: string) => {
+        //   if (articleData.value) {
+        //     ArticleInfo = articleData.value
+        //   }
+        // })
+      }
+      console.log('ArticleInfo-信息',ArticleInfo)
   }
   setArticleData()
 
@@ -59,15 +62,15 @@
   //   await refresh()
   //   setArticleData()
   // })
-  updateViews(params.id)
+  // updateViews(params.id)
 
   const getTagLabel = (arr: any): string => {
-    const text = arr.map((v: any) => v.label).join()
+    const text = arr.map((v: any) => v.tagName).join()
     return text
   }
 
   const tagLabel = computed(() => {
-    return getTagLabel(ArticleInfo.tags)
+    return getTagLabel(ArticleInfo.tagVOList)
   })
 
   // 获取文章目录
@@ -111,7 +114,7 @@
     commentTotal.value = total
     // console.log({ comments, total });
   }
-  getCommentHandle()
+  // getCommentHandle()
 
   // 目录吸顶
   const mainViewArea = ref<HTMLElement>()
@@ -128,9 +131,8 @@
     })
   }
   // 侧边栏吸顶
-
   useHead({
-    title: ArticleInfo.title + ' - 文章详情',
+    title: ArticleInfo.articleTitle + ' - 文章详情',
     titleTemplate: title => `${title} - 魚的小屋`,
   })
 </script>
@@ -139,34 +141,34 @@
     <section class="banner-container">
       <div class="banner-content">
         <img
-          :alt="ArticleInfo.category.label"
-          :src="isTrueCoverLink(ArticleInfo.cover) || defaultImg"
+          :alt="ArticleInfo.category.categoryName"
+          :src="isTrueCoverLink(ArticleInfo.articleCover) || defaultImg"
         >
         <!-- <div>文章详情</div> -->
         <div class="article-header text-gray-200">
-          <h1 class="title">{{ ArticleInfo.title }}</h1>
+          <h1 class="title">{{ ArticleInfo.articleTitle }}</h1>
           <p class="detail inline-flex items-center justify-center">
             <xia-icon icon="blog-category" />
-            {{ ArticleInfo.category.label }}
+            {{ ArticleInfo.category.categoryName }}
             <xia-icon class="ml-3" icon="blog-tag" />
             {{ tagLabel }}
           </p>
           <p class="detail flex items-center justify-center">
-            <xia-icon icon="blog-time" />更新于{{ formactDate(ArticleInfo.uTime) }}
+            <xia-icon icon="blog-time" />更新于{{ formactDate(ArticleInfo.updateTime) }}
           </p>
           <p class="detail">
             <!-- 阅读量 -->
             <span class="mr-2 cursor-pointer inline-flex items-center">
               <xia-icon icon="blog-view" />
-              {{ ArticleInfo['views'] }}
+              {{ ArticleInfo.viewCount }}
             </span>
             <!-- 点赞数 -->
             <span
               class="mr-2 cursor-pointer inline-flex items-center"
               @click.stop="updateLikesHandle(ArticleInfo)"
             >
-              <xia-icon :icon="ArticleInfo['checked'] ? 'blog-like-solid' : 'blog-like'" />
-              {{ ArticleInfo['likes'] }}
+              <xia-icon :icon="1 ? 'blog-like-solid' : 'blog-like'" />
+              {{ ArticleInfo.likeCount }}
             </span>
           </p>
         </div>
@@ -179,10 +181,10 @@
             <div class="flex items-center justify-between">
               <div class="btn btn-ghost btn-circle avatar">
                 <div class="w-10 rounded-full">
-                  <img :src="ArticleInfo.userInfo.avatar || Qie">
+                  <img :src="ArticleInfo.avatar || Qie">
                 </div>
               </div>
-              <span class="text-color font-bold">{{ ArticleInfo.userInfo.nickname }}</span>
+              <span class="text-color font-bold">{{ ArticleInfo.nickname }}</span>
             </div>
             <div class="dropdown dropdown-bottom ml-6">
               <div tabindex="0" role="button" class="btn m-1 btn-neutral">主 题</div>
@@ -198,7 +200,7 @@
           </div>
           <MdPreview
             :key="mdKey"
-            v-model="ArticleInfo.content"
+            v-model="ArticleInfo.articleContent"
             class="x-md-editor"
             preview-only
             :preview-theme="previewTheme"

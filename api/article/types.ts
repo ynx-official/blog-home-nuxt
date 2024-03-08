@@ -73,3 +73,26 @@ export interface TagVO {
    */
   tagName: string;
 }
+
+export interface CategoryVO {
+  id: number;
+  categoryName: string;
+}
+
+export interface ArticleDetailVO {
+  id: number;
+  articleCover: string;
+  articleTitle: string;
+  articleContent: string;
+  articleType: number;
+  viewCount: number;
+  likeCount: number;
+  category: CategoryVO;
+  tagVOList: TagVO[];
+  lastArticle: ArticleDetailVO;
+  nextArticle: ArticleDetailVO;
+  createTime: string;
+  updateTime: string;
+  nickname: string;
+  avatar: string;
+}

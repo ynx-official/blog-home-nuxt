@@ -5,10 +5,10 @@ export const getArticleList = async (data: any) => {
   return res.data
 }
 export const getArticleInfo = async (params: any) => {
-  // console.log(params.id)
+  console.log(params.id)
   if (!params.id) { return }
 
-  const res = await request.get('/blog/article/info', params)
+  const res = await request.get(`/blog/article/${params.id}`, params)
   return res.data
 }
 
