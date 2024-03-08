@@ -105,7 +105,7 @@
       },
       {
         name: 'author',
-        content: '江夏, 963798512@qq.com',
+        content: '魚的小屋, 1224678297@gmail.com',
       }
     ],
     // 百度统计

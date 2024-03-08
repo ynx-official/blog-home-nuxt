@@ -16,7 +16,7 @@
   })
   useHead({
     title: '注册',
-    titleTemplate: title => `${title} - 江夏的个人博客-记录生活记录你~`,
+    titleTemplate: title => `${title} - 魚的个人博客-记录生活记录你~`,
   })
   interface formState extends StringKey {
     mobile: string

@@ -4,7 +4,7 @@
   const banners = useBanners()
   // console.log(imagesData);
   useHead({
-    title: '文章列表',
+    title: '首页',
     titleTemplate: title => `${title} - 魚的小屋`,
   })
   // 古诗词
