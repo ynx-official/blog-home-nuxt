@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
-import { getArticleList } from '~/api/article/article'
-import { categoryOptions, formactDate, getOptions, updateLikesHandle, xBLogStore } from '@/utils/common'
-import { colorRgb } from '~~/utils/color'
-import type { IArticle } from '~/api/article/types'
+  import { computed, reactive, ref } from 'vue'
+  import { getArticleList } from '~/api/article/article'
+  import { categoryOptions, formactDate, updateLikesHandle, xBLogStore } from '@/utils/common'
+  import { colorRgb } from '~~/utils/color'
+  import type { IArticle } from '~/api/article/types'
+  const route = useRoute()
 
-interface queryState {
+  // 分页
+  const current = Number(route.query.page || 1)
+
+  interface queryState {
     current: number
     category: string
     tags: string[]
@@ -27,7 +31,7 @@ interface queryState {
   const articleList = ref(articleListDefault)
 
   const queryPrams: queryState = reactive({
-    current: 1,
+    current,
     category: '',
     tags: [],
     size: 12,
@@ -49,25 +53,27 @@ interface queryState {
     // 这样生命的变量时响应式的，不这样声明请求回来复制不然渲染到模板上
     data: articleData,
   } = await useAsyncData('index_GetList', () => getArticleList(queryPrams))
-  console.log('文章信息:::',articleData.value)
+  console.log('文章信息:::', articleData.value)
   if (articleData.value) {
     articleList.value = articleData.value.records
     queryPrams.total = articleData.value.total
     console.log('文章列表总文章======>', articleData.value.total)
   }
-  // console.log({articleData:articleData.value})
-  // 此测试印证上面描述
-  // const { data: articleData } = await useAsyncData("index_GetList", () =>
-  //   Promise.resolve()
-  // );
-  getOptions('标签')
-  getOptions('分类')
+  // getOptions('标签')
+  // getOptions('分类')
   // 下一页
-  const getArticleListHandle = async (val = 1) => {
+  const getArticleListHandle = async (val: number) => {
     queryPrams.current = val
     const { data: res, } = await useAsyncData('index_GetList', () => getArticleList(queryPrams))
     articleList.value = res.value.records
     queryPrams.total = res.value.total
+    // window.history.pushState(val, '', `/?page=${val}`)
+    // navigateTo({
+    //   path: '/',
+    //   query: route.query
+    // });
+    // 导航时替换当前页面历史记录
+    navigateTo('/?page=' + val, { replace: true, })
   }
   // 获取标签名(暂时没有用)
   const getTagLabel = (arr: []): string => {
@@ -77,31 +83,30 @@ interface queryState {
   }
 
   // 点击tag
-  const clickTagHandle = (item: itemState, type: string) => {
-    if (type === '分类') {
-      if (queryPrams.category === item.id) {
-        // 清空选中
-        queryPrams.category = ''
-      } else {
-        queryPrams.category = item.id
-      }
-    } else {
-      // 标签
-      item.checked = !item.checked
+  // const clickTagHandle = (item: itemState, type: string) => {
+  //   if (type === '分类') {
+  //     if (queryPrams.category === item.id) {
+  //       // 清空选中
+  //       queryPrams.category = ''
+  //     } else {
+  //       queryPrams.category = item.id
+  //     }
+  //   } else {
+  //     // 标签
+  //     item.checked = !item.checked
+  //
+  //     const list: any = [...queryPrams.tags]
+  //     if (!item.checked) {
+  //       list.splice(list.indexOf(item.id), 1)
+  //     } else if (!list.includes(item.id)) {
+  //       list.push(item.id)
+  //     }
+  //     queryPrams.tags = list
+  //     // console.log(queryPrams.tags);
+  //   }
+  //   getArticleListHandle(1)
+  // }
 
-      const list: any = [...queryPrams.tags]
-      if (!item.checked) {
-        list.splice(list.indexOf(item.id), 1)
-      } else if (!list.includes(item.id)) {
-        list.push(item.id)
-      }
-      queryPrams.tags = list
-      // console.log(queryPrams.tags);
-    }
-    getArticleListHandle(1)
-  }
-  // 分页
-  const current = ref(1)
   const currentChangeHandle = (val: number) => {
     getArticleListHandle(val)
   }
@@ -117,10 +122,10 @@ interface queryState {
     queryPrams.content = searchText.value
     getArticleListHandle(1)
   }
-  const changeSort = () => {
-    queryPrams.sort === 'ASC' ? (queryPrams.sort = 'DESC') : (queryPrams.sort = 'ASC')
-    getArticleListHandle()
-  }
+  // const changeSort = () => {
+  //   queryPrams.sort === 'ASC' ? (queryPrams.sort = 'DESC') : (queryPrams.sort = 'ASC')
+  //   getArticleListHandle(1)
+  // }
 
   // 颜色转换
   const toRgb = (color: string, alpha = 0.24) => {
@@ -151,11 +156,11 @@ interface queryState {
   const weatherUrl =
     'https://api.vvhan.com/api/ipCard?tip=Hello ' + (userInfo.value.nickname || '亲爱的路人！')
 
-  onMounted(async () => {
-    // 古诗词
-    // weatherData.value = await getWeather()
-    //  console.log(weatherData.value)
-  })
+  // onMounted(async () => {
+  //   // 古诗词
+  //   // weatherData.value = await getWeather()
+  //   //  console.log(weatherData.value)
+  // })
 </script>
 
 <template>
@@ -186,10 +191,10 @@ interface queryState {
           <div v-for="item in articleList" :key="item.id" class="article-item">
             <figure>
               <img
-                  @click="$router.push(`/article/${item.id}`)"
                 v-lazyImg="item.articleCover"
                 class="h-52 w-full bg-gray-900"
                 :alt="item.category.label"
+                @click="$router.push(`/article/${item.id}`)"
               >
             </figure>
             <div class="card-body">
@@ -197,7 +202,11 @@ interface queryState {
                 {{ item.articleTitle }}
                 <div v-if="item.topping" class="badge badge-secondary">TOP</div>
               </h2>
-              <p class="text-sm" @click="$router.push(`/article/${item.id}`)">{{ item.articleTitle }}</p>
+              <p class="text-sm" @click="$router.push(`/article/${item.id}`)">
+                {{
+                  item.articleTitle
+                }}
+              </p>
               <div class="card-actions justify-start text-xs flex-wrap">
                 <div class="flex items-center">
                   <!-- 分类 -->
@@ -461,6 +470,11 @@ interface queryState {
     // 卡片样式
     .article-item {
       max-height: 408px;
+      @apply card card-compact mr-5 bg-base-100 mb-5 hover:drop-shadow-lg transition-all shadow-xl;
+    }
+    // 卡片样式
+    .article-item:hover {
+      cursor: pointer;
       @apply card card-compact mr-5 bg-base-100 mb-5 hover:drop-shadow-lg transition-all shadow-xl;
     }
     .article-item-wrap {

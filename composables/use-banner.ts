@@ -1,4 +1,5 @@
 import { useState } from '#app'
+import type { BannerState } from '~/types/global'
 /* 该文件夹也就是写hooks的 */
 const banners = reactive<BannerState[]>([])
 // useState 的第一参数为 key，第二参数为初始化的工厂函数

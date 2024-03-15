@@ -55,12 +55,13 @@
   }
 
   .banner-container {
-    height: 100vh;
+    //height: 100vh;
+    height: 40vh;
     .site-info {
       pointer-events: none;
       position: absolute;
       width: 100%;
-      top: 50%;
+      top: 25%;
       left: 0;
       transform: translate3d(0, -50%, 0);
       z-index: 2;

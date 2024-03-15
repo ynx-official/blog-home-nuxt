@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { type PropType } from 'vue'
+  import type { BannerState } from '~/types/global'
   const props = defineProps({
     images: {
       type: Array as PropType<BannerState[]>,
