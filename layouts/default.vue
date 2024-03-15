@@ -126,22 +126,27 @@
     <!-- 页脚 -->
     <footer class="app-layout-footer">
       <p>
-        😁 博客已平稳运行 {{ runTime }} 天
+        博客已平稳运行 {{ runTime }} 天
         <a
-          href="https://jiang-xia.top/sitemap.xml"
+          href="http://blog.120120.top/sitemap.xml"
           target="_blank"
           class="link link-hover"
         >SITEMAP</a>
-        😀
       </p>
       <p>
-        <NuxtLink target="_blank" href="https://beian.miit.gov.cn/#/Integrated/recordQuery">
-          桂ICP备2022001119号-1
+        <NuxtLink
+          target="_blank"
+          href="https://beian.mps.gov.cn/#/query/webSearch?code=36042402000079"
+        >
+          公安备案信息： 赣公安备36042402000079
         </NuxtLink>
       </p>
       <p>
-        Powered By Typescript & Vue3 & Vite3 & Nuxt3 & Tailwindcss & DaisyUI & Node.js & NestJS
+        <NuxtLink target="_blank" href="https://beian.miit.gov.cn/#/Integrated/recordQuery">
+          赣ICP备16011761号-3
+        </NuxtLink>
       </p>
+      <p> Powered By Typescript & Vue3 & Vite3 & Nuxt3 </p>
     </footer>
     <!-- 回到顶部 -->
     <xia-backtop class="shake-slow">

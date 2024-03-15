@@ -1,6 +1,5 @@
-import { fileURLToPath } from 'node:url'
-import fs from 'fs'
 import Icons from 'unplugin-icons/vite'
+
 const prefixPath: any = process.env.VITE_NUXT_PREFIX_PATH
 console.warn({
   BASE_URL: process.env.VITE_NUXT_BASE_URL,
@@ -19,7 +18,7 @@ export default defineNuxtConfig({
     //  '@kevinmarrec/nuxt-pwa'
   ],
   sitemap: {
-    hostname: 'https://jiang-xia.top',
+    hostname: 'http://blog.120120.top',
   },
   // pwa: {
   //   workbox: {
